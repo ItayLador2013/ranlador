@@ -1,0 +1,57 @@
+{% include 'home/layout.html' %}
+
+{% block body %}
+
+
+{% endblock %}
+
+
+<style>
+    .nav-backs {
+        width: 100vw;
+        background-color: white;
+    }
+</style>
+
+
+
+    <div id="paper-info-page">
+
+        <div class="paper-pole"></div>
+        <div class="paper-pole"></div>
+
+
+        <div id="paper-back" onclick="goToPublications()">
+            <div><i class="fa fa-angle-left" style="margin-right: .5vw;"></i> more publications</div>
+        </div>
+
+        <div id="paper-title">
+            {{paper.title}}
+        </div> 
+
+        <div id="paper-publisher">
+            {{paper.dateStr}}
+        </div>
+
+        <div id="paper-publisher">
+            {{paper.publisher}}
+        </div>
+
+        <div id="paper-authors">
+            Lador R, {{paper.collaborators}}
+        </div>
+
+        <div id="paper-image">
+
+        </div>
+
+        <div class="paper-abstract">Abstract</div>
+        <div class="paper-abstract-text">
+            {{paper.abstract}}
+        </div>
+
+        <iframe src="/media/{{paper.pdf}}" id="paper-pdf"> 
+        </iframe> 
+
+
+</div>

@@ -1,0 +1,155 @@
+{% include 'home/layout.html' %}
+
+{% block body %}
+
+<style>
+    .nav-backs {
+        width: 100vw;
+        background-color: white;
+    }
+</style>
+
+    <div id="research-page">
+
+        <div id="reviews-top">
+
+            <div id="reviews-top-left">
+
+                <i data-star="4.9" id="stars"></i>
+                <div id="stars-text"></div>
+                
+            </div>
+
+            <div id="reviews-top-right">
+                Patient Experience
+            </div>
+
+        </div>
+
+        <div id="reviews-view">
+            
+        </div>
+        
+    </div>
+
+    <script>
+
+        const starsInt = {"FIVE": 5, "FOUR": 4, "THREE": 3, "TWO": 2, "ONE": 1}
+    </script>
+
+
+<script>
+
+    // Function to fetch Google Reviews
+function fetchGoogleReviews(placeId) {
+  var service = new google.maps.places.PlacesService(document.createElement('div'));
+  var request = {
+      placeId: placeId,
+      fields: ['name', 'rating', 'reviews']
+  };
+
+  function fetchReviews(nextPageToken) {
+      request.pageToken = nextPageToken || "";
+      service.getDetails(request, function(place, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+              var allReviews = place.reviews || []; // Initialize empty array if no reviews in first response
+              if (nextPageToken) {
+                  // Append reviews from subsequent requests
+                  allReviews = allReviews.concat(reviewsView.reviews); // Replace reviewsView.reviews with your existing array to store all reviews
+              }
+
+              const stars = place.rating;
+              document.getElementById("stars").setAttribute("data-star", stars);
+              document.getElementById("stars-text").innerHTML = `${stars} stars`;
+
+              const comments = document.createElement("div");
+              comments.id = `reviews-number`;
+              comments.innerHTML = `top ${allReviews.length} reviews`;
+
+              const googleReviewsView = document.createElement("a");
+              googleReviewsView.href = `https://www.google.com/search?q=ran+lador&rlz=1C5CHFA_enUS902US905&oq=ra&gs_lcrp=EgZjaHJvbWUqCAgAEEUYJxg7MggIABBFGCcYOzIGCAEQRRg5MgYIAhBFGDsyDQgDEC4YxwEY0QMYgAQyDQgEEC4YxwEY0QMYgAQyBggFEEUYPDIGCAYQRRg8MgYIBxBFGD3SAQc4MTZqMGo5qAIAsAIA&sourceid=chrome&ie=UTF-8#lrd=0x8640c111865509bd:0x6f8e589a91f2ab76,1,,,,`
+              const googleReviews = document.createElement("img")
+              googleReviews.src = `/media/assets/google-reviews.png`
+              googleReviewsView.appendChild(googleReviews)
+              comments.appendChild(googleReviewsView);
+              reviewsView.appendChild(comments);
+
+              displayReviews(allReviews);
+              // Check for next page token and make another request if available
+              if (place.next_page_token) {
+                    fetchReviews(place.next_page_token);
+            } 
+
+          } else {
+              console.error('Error fetching place details:', status);
+          }
+      });
+  }
+
+  fetchReviews(); // Initial request without nextPageToken
+}
+
+
+    // Function to display reviews on the webpage
+    function displayReviews(reviews) {
+        for(let i = 0; i < reviews.length; i++){
+                reviewsView.appendChild(newReview(reviews[i]))
+        }
+    }
+    // Call the fetchGoogleReviews function with your business's place ID
+    fetchGoogleReviews('ChIJvQlVhhHBQIYRdqvykZpYjm8');
+</script>
+
+
+    <script>
+        
+
+        const reviewsView = document.getElementById("reviews-view")
+
+        window.addEventListener("DOMContentLoaded", () => {
+            
+    
+        })
+
+
+        const newReview = (review) => {
+            const reviewView = document.createElement("div")
+            reviewView.className = `review-view`
+
+            const reviewBioView = document.createElement("div")
+            reviewBioView.className = `review-bio-view`
+
+            const reviewBioImage = document.createElement("img")
+            reviewBioImage.src = review.profile_photo_url
+            reviewBioImage.className = `review-bio-image`
+
+            const reviewBioRight = document.createElement("div")
+            reviewBioRight.className = `review-bio-right`
+
+            const reviewName = document.createElement("div")
+            reviewName.className = `review-title`
+            reviewName.innerHTML = review.author_name
+
+            const reviewStars = document.createElement("i")
+            reviewStars.setAttribute("data-star", review.rating)
+            reviewStars.className = `stars`
+
+            reviewBioRight.appendChild(reviewName)
+            reviewBioRight.appendChild(reviewStars)
+
+            reviewBioView.appendChild(reviewBioImage)
+            reviewBioView.appendChild(reviewBioRight)
+            
+            const reviewContent = document.createElement("div")
+            reviewContent.className = `review-content`
+            reviewContent.innerHTML = review.text
+
+            reviewView.appendChild(reviewBioView)
+            reviewView.appendChild(reviewContent)
+            return reviewView
+        }
+
+        
+
+    </script>
+{% endblock %}

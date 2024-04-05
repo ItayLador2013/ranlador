@@ -1,0 +1,491 @@
+{% include 'home/layout.html' %}
+
+
+
+{% block body %}
+
+
+<head>
+<link rel="shortcut icon" href="/media/assets/spine-black.png" type="image/png">
+</head>
+<style>
+    #nav-btn {
+        color: white;
+    }
+
+    .top-nav-text {
+        opacity: 0;
+    }
+
+    #nav-text-view {
+        animation: moveLeft 2s forwards; /* Apply the animation */
+    }
+
+    #all-content {
+        background-color: rgb(30,30,30);
+        color: white;
+    }
+</style>
+
+<div id="home-page">
+        
+    <div id="all-content">
+                <div id="bio-view">
+                    <div id="bio-profile-view"><img id="bio-profile" src="/media/{{home.profileImage}}"/></div>
+                    <div id="bio-right">
+                        <div id="bio-title">Bio</div>
+                        <div id="bio-content">
+                            {{home.bio}}
+                        </div>
+
+                        <div id="bio-read-more" onclick="readMore()">
+                            read more
+                        </div>
+                        
+                    </div>
+                </div>
+
+
+                <div class="parallax" id="parallax-1"></div>
+
+                <div id="interests-view">
+                    
+                    <div id="interests-title">Clinical Interests</div>
+
+                    <div id="interests">
+                        {% for interest in interests %}
+                            <div class="interest" onclick="openModel(`{{interest}}`, `{{interest.description}}`)">
+                                <img src="/media/{{interest.icon}}"/>
+                                <div class="interest-text">{{interest.interest}}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <div class="parallax" id="parallax-2"></div>
+
+                <div id="home-research-view" onclick="goToPublications()">
+                    <img src="/media/images/researchIntro.jpg" id="home-research-image"/>
+                    <div id="home-research-text-view">
+                        <div id="home-research-title" class="home-research">Research</div>
+                        <div id="home-research-text" class="home-research">
+                            {{home.research}}
+                        </div>
+                        <a id="home-go-to-research" class="home-research line-under">
+                            Click to view publications
+                        </a>
+                    </div>
+                </div>
+
+
+                <a id="home-reviews-view" href="/patient-experience">
+                    <div id="home-stars-total">
+                            <i data-star="4.9" id="stars" ></i>
+                            <div id="stars-text" style="color: rgb(230,230,230);"></div>
+                    </div>
+                    <div id="home-reviews-content">
+
+                    </div>
+
+                    <img id="home-google-image" src="/media/assets/google-reviews.png"/>
+                </a>
+
+                <div id="home-contact-view">
+                    {% include 'home/contact.html' with homepage="true" %}
+                </div>
+
+                <div id="footer">
+
+                    <img src="/media/assets/microscope.png" id="footer-image"/>
+
+
+                    <div id="footer-locations">
+                        {% for location in locations %}
+
+                            <div class="footer-location">
+                                <div class="footer-location-title">
+                                    {{location.title}}
+                                </div>
+
+                                <div class="footer-location-number">
+                                    {{location.number}}
+                                </div>
+
+                                <div class="footer-location-address">
+                                    {{location.address}}
+                                </div>
+
+                                <div class="footer-location-location">
+                                    {{location.location}}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+
+    </div>
+
+    <div id="interest-model" class="model" onclick="closeModel()">
+        <div id="model-content" onclick="doNothing()">
+
+            <div id="model-title">
+
+            </div>
+
+            <div id="model-text">
+                
+            </div>
+
+        </div>
+    </div>
+
+        <div id="home-background-view">
+            <img src="/media/{{home.backgroundImage}}" class="home-background" style="opacity:1 "/>
+            <img src="/media/{{home.altBackgroundImage}}" class="home-background" id="home-black-white-back"/>
+        </div>
+    
+    <div id="content-view">
+            
+        <div id="home-content-top">
+
+            <div id="home-front-text-view">
+                <img src="/media/{{home.profileImage}}" id="profile-image"/>
+                <div>{{home.name}}</div>
+                <div style="flex-direction: row; display: flex; align-items: center;">
+                    <img src="/media/assets/spine-white.png" style="height: 40px; width: 40px;" id="spine-icon"/>
+                    <div>
+                        {{home.title}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+
+<script>
+    const doNothing = () => {
+
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+</script>
+
+
+    <script>
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                if(document.getElementById("interest-model").style.opacity = 1){
+                    closeModel()
+                }
+            }
+        });
+        const openModel = (interest, description) => {
+            document.getElementById("interest-model").style.display = "flex"
+
+            setTimeout(() => {
+                document.getElementById("interest-model").style.opacity = 1
+            }, 100);
+
+            document.getElementById("model-title").innerHTML = interest
+            document.getElementById("model-text").innerHTML = description
+        }
+
+        const closeModel = () => {
+            document.getElementById("interest-model").style.display = "none"
+            setTimeout(() => {
+                document.getElementById("interest-model").style.opacity = 0
+            }, 100);
+            document.getElementById("model-title").innerHTML = ``
+            document.getElementById("model-text").innerHTML = ``
+        }
+
+        function isElementInView(view) {
+            return window.pageYOffset >= (view.offsetTop)
+        }
+        
+        const editClassStyle = (className, styleEdited, edit) => {
+            classObjects = document.getElementsByClassName(className)
+            for(let i = 0; i < classObjects.length; i++){
+                classObjects[i].style[styleEdited] = edit
+            }
+        }
+
+        function isElementAtTop(element) {
+            var rect = element.getBoundingClientRect();
+            return rect.top <= 0;
+        }
+
+        const frontTextView = document.getElementById("home-front-text-view")
+        const homeBackground = document.getElementById("home-background-view")
+        const navBar = document.getElementById("nav-bar")
+        const blackWhiteBackground = document.getElementById("home-black-white-back")
+        const navBtn = document.getElementById("nav-btn")
+        const spineIcon = document.getElementById("spine-icon")
+        const contentTop = document.getElementById("home-content-top")
+        const interestsView = document.getElementById("interests-view")
+        const interests = document.getElementsByClassName("interest")
+        const researchView = document.getElementById("home-research-view")
+        const researchContent  = document.getElementsByClassName("home-research")
+        const bioContent = document.getElementById("bio-content")
+        const allContent = document.getElementById("all-content")
+        const allContentContent = allContent.getElementsByTagName("div")
+        var offset = frontTextView.offsetTop
+        let backgroundMarginTop = 0
+
+        document.addEventListener("scroll", () => {
+            if(window.pageYOffset > offset){
+                frontTextView.id = `nav-text-view`
+                homeBackground.style.position = "relative"
+                homeBackground.style.marginTop = "70vh"
+                if(window.innerWidth <= 800){
+                    homeBackground.style.marginTop = "62vh"
+                    allContent.style.opacity = 1
+                }
+                
+                navBar.style.width = '100vw'
+                editClassStyle(`nav-backs`, `width`, "100vw")
+                navBtn.style.color = "black"
+                spineIcon.src = `/media/assets/spine-black.png`
+                contentTop.style.height = "100vh"
+            } else {
+                frontTextView.id = `home-front-text-view`
+                homeBackground.style.position = "fixed"
+                homeBackground.style.marginTop = "0vh"
+                backgroundMarginTop = window.innerHeight - frontTextView.clientHeight
+                const backgroundOpacity =  1 - ((window.pageYOffset/1.8)/offset)
+                blackWhiteBackground.style.opacity = backgroundOpacity
+                let widthCheck = (window.pageYOffset/offset ) * .5
+                editClassStyle('nav-backs', 'width', '.5vw')
+                navBtn.style.color = "white"
+                spineIcon.src = `/media/assets/spine-white.png`
+                contentTop.style.height = "100vh"
+                if(window.innerWidth <= 800){
+                    allContent.style.opacity = 0
+                }
+                
+            }
+
+            if(isElementInView(interestsView)){
+                for(let i=0; i < interests.length; i++){
+                    setTimeout(() => {
+                        if ((i + 1) % 3 == 0 || i == 0 || i % 3 == 0) {
+                            interests[i].style.transform = "translateX(0px)";
+                        }
+                        interests[i].style.opacity = 1;
+                    }, i * 100);
+                }
+            } else {
+                for(let i=0; i < interests.length; i++){
+                    if(i == 0 | i % 3 == 0){
+                        interests[i].style.transform = "translateX(-33vw)"
+                    } else if ((i + 1) % 3 == 0){
+                        interests[i].style.transform = "translateX(33vw)"
+                    }
+                    interests[i].style.opacity = 0
+                }
+            }
+
+            const reviews = document.getElementsByClassName("review-view")
+            if(isElementInView(reviewsView)){
+                for(let i = 0; i < reviews.length; i++){
+                    setTimeout(() => {
+                        reviews[i].style.transform = "translateY(0vw)"
+                    }, i * 100);
+                }
+            } else {
+                for(let i = 0; i < reviews.length; i++){
+                    setTimeout(() => {
+                        reviews[i].style.transform = "translateY(-20vw)"
+                    }, i * 100);
+                }
+            }
+
+
+            if(isElementInView(researchView)){
+                for(let i = 0; researchContent.length; i++){
+                    if(i != 2){
+                        researchContent[i].style.transform = "translateX(0vw)"
+                    }
+                    researchContent[i].style.opacity = 1
+                }
+            } else {
+                for(let i = 0; researchContent.length; i++){
+                    if(i != 2){
+                        researchContent[i].style.transform = "translateX(30vw)"
+                    }
+                    researchContent[i].style.opacity = 0
+                }
+            }
+
+
+        })
+
+        const readMoreBio = document.getElementById("bio-read-more")
+
+        window.addEventListener("DOMContentLoaded", () => {
+            bioContent.classList.add("bio-content-less")
+
+            const readMoreBio = document.getElementById("bio-read-more")
+
+            readMoreBio.innerHTML = `read more`
+        })
+
+        const readMore = () => {
+            if(readMoreBio.innerHTML == `read more`){
+                bioContent.classList.remove("bio-content-less")
+                readMoreBio.innerHTML = `read less`
+            } else {
+                bioContent.classList.add("bio-content-less")
+                scrollToElement(bioContent)
+                readMoreBio.innerHTML = `read more`
+            }
+        }
+
+        function scrollToElement(element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' }); // Smooth scroll to the element
+        }
+    </script>
+
+<script>
+
+    // Function to fetch Google Reviews
+function fetchGoogleReviews(placeId) {
+  var service = new google.maps.places.PlacesService(document.createElement('div'));
+  var request = {
+      placeId: placeId,
+      fields: ['name', 'rating', 'reviews']
+  };
+
+  function fetchReviews(nextPageToken) {
+      request.pageToken = nextPageToken || "";
+      service.getDetails(request, function(place, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+              var allReviews = place.reviews || []; // Initialize empty array if no reviews in first response
+              allReviews = shuffleArray(allReviews)
+              if (nextPageToken) {
+                  // Append reviews from subsequent requests
+                  allReviews = allReviews.concat(reviewsView.reviews); // Replace reviewsView.reviews with your existing array to store all reviews
+              }
+
+              const stars = place.rating;
+              document.getElementById("stars").setAttribute("data-star", stars);
+              document.getElementById("stars-text").innerHTML = `${stars} stars <div style="opacity: .3; font-size: 10px"> (77)</div>`;
+              document.getElementById("stars-text").style.flexDirection = "row"
+              document.getElementById("stars-text").style.display = "flex"
+              document.getElementById("stars-text").style.justifyContent = "center"
+
+              displayReviews(allReviews);
+              // Check for next page token and make another request if available
+              if (place.next_page_token) {
+                    fetchReviews(place.next_page_token);
+            } 
+
+          } else {
+              console.error('Error fetching place details:', status);
+          }
+      });
+  }
+
+  fetchReviews(); // Initial request without nextPageToken
+}
+
+
+    // Function to display reviews on the webpage
+    function displayReviews(reviews) {
+        const all = []
+        for(let i = 0; i < reviews.length; i++){
+                const nextReview = newReview(reviews[i], i)
+                all.push(nextReview)
+                reviewsView.appendChild(nextReview)
+        }
+
+        const nextReview = all[2]        
+        const containerWidth = nextReview.clientWidth;
+        const thirdElementWidth = nextReview.offsetWidth;
+        const scrollPosition = nextReview.offsetLeft - (containerWidth - thirdElementWidth) / 2;
+        if(window.innerWidth > 800){
+            reviewsView.scrollLeft = scrollPosition - nextReview.offsetWidth/3;
+        }
+    }
+    // Call the fetchGoogleReviews function with your business's place ID
+    fetchGoogleReviews('ChIJvQlVhhHBQIYRdqvykZpYjm8');
+</script>
+
+
+    <script>
+        
+
+        const reviewsView = document.getElementById("home-reviews-content")
+
+        const newReview = (review, i) => {
+            const reviewView = document.createElement("div")
+            reviewView.className = `review-view`
+            reviewView.style.backgroundColor = `white`
+            reviewView.style.color = `rgb(50,50,50)`
+            reviewView.style.boxShadow = `0 4px 8px 0 rgba(250, 250, 250, 0.8), 0 6px 20px 0 rgba(250, 250, 250, 0.71)`
+            reviewView.style.borderStyle = "solid"
+            reviewView.style.borderWidth = "1px"
+            reviewView.style.borderColor = "rgba(0,0,0,.1)"
+            reviewView.style.overflowY = "hidden"
+            reviewView.style.minWidth = "60vw"
+
+            if(window.innerWidth <= 800){
+                if(i % 2 == 1) {
+                    reviewView.style.alignSelf = "flex-end"
+                }
+                reviewView.style.overflowY = "auto"
+            }
+            
+
+            const reviewBioView = document.createElement("div")
+            reviewBioView.className = `review-bio-view`
+
+            const reviewBioImage = document.createElement("img")
+            reviewBioImage.src = review.profile_photo_url
+            reviewBioImage.className = `review-bio-image`
+
+            const reviewBioRight = document.createElement("div")
+            reviewBioRight.className = `review-bio-right`
+
+            const reviewName = document.createElement("div")
+            reviewName.className = `review-title`
+            reviewName.innerHTML = review.author_name
+
+            const reviewStars = document.createElement("i")
+            reviewStars.setAttribute("data-star", review.rating)
+            reviewStars.className = `stars`
+
+            reviewBioRight.appendChild(reviewName)
+            reviewBioRight.appendChild(reviewStars)
+
+            reviewBioView.appendChild(reviewBioImage)
+            reviewBioView.appendChild(reviewBioRight)
+            
+            const reviewContent = document.createElement("div")
+            reviewContent.className = `review-content`
+            reviewContent.innerHTML = review.text
+
+            reviewView.appendChild(reviewBioView)
+            reviewView.appendChild(reviewContent)
+
+            return reviewView
+        }
+
+    </script>
+
+{% endblock %}

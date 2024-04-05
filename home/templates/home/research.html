@@ -1,0 +1,69 @@
+{% include 'home/layout.html' %}
+
+{% block body %}
+
+<style>
+    .nav-backs {
+        width: 100vw;
+        background-color: white;
+    }
+</style>
+
+<div id="research-page">
+
+    <div class="page-title">
+        Publications
+    </div>
+
+    <div id="research-view">
+            {% for paper in research %}
+
+            <div class="paper-view" onclick="goToPaper(`{{paper.id}}`, `{{paper.title}}`)">
+                <div class="paper-content">
+                    <div class="paper-date">
+                        {{paper.dateStr}}
+                    </div>
+                    <div class="paper-title">
+                        {{paper.title}}
+                    </div>
+                    <div class="paper-colabs" style="opacity: .9;">
+                        {{paper.publisher}}
+                    </div>
+                    <div class="paper-colabs">
+                        Co-Authors: {{paper.collaborators}}
+                    </div>
+                </div>
+                <div class="paper-images-view">
+                    {% for image in paper.images.all %}
+                        <img class="paper-image" src="/media/{{image.image}}"/>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% endfor %}
+    </div>
+
+    <div id="reviews"></div>
+
+</div>
+
+<script>
+    const allPapers = document.getElementsByClassName("paper-view")
+
+    window.addEventListener("DOMContentLoaded", () => {
+        for(let i = 0; i < allPapers.length; i++){
+            setTimeout(() => {
+            allPapers[i].style.transform = "translateX(0)"
+            allPapers[i].style.opacity = 1
+            }, i * 100)
+        }
+    })
+
+
+    const goToPaper = (id, title) => {
+        window.location.href = `/paper/${id}/${title}`
+    }
+</script>
+
+
+{% endblock %}

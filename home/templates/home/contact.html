@@ -1,0 +1,175 @@
+
+{% if homepage %}
+{% else %}
+
+{% include 'home/layout.html' %}
+<style>
+    .nav-backs {
+        width: 100vw;
+    }
+</style>
+{% endif %}
+
+    <div id="contact-page" style="min-height: 100vh;">
+
+        <div id="contact-page-intro">
+            Input Info to Schedule Appointment
+        </div>
+
+        <div id="contact-sent-view">
+            <video id="contact-sent-video"  >
+                <source src="/media/assets/check.mp4" type="video/mp4" >
+                Your browser does not support the video tag.
+            </video>
+
+            <div>
+                Your response has been recorded. We will contact you soon via email/phone to finalize your appointment.
+            </div>
+        </div>
+
+            <div id="contact-view">
+                <div id="contact-info" class="contact-view-item">
+                    <div id="contact-info-title">Contact Info</div>
+
+                    <div>
+                        <i class="fa fa-map-marker"></i>
+                        <div>6400 Fannin St Suite 1700, Houston, TX 77030</div>
+                    </div>
+
+                    <div>
+                        <i class="fa fa-envelope"></i>
+                        <div>ranilador@gmail.com</div>
+                    </div>
+
+                    <div>
+                        <i class="fa fa-phone"></i>
+                        <div>(713) 486-7500</div>
+                    </div>
+
+                    <div>
+                        <i class="fa fa-calendar"></i>
+                        <div>
+                            <div><strong>Mon-Fri:</strong> 8:00 AM - 5:00 PM</div>
+                            <div><strong>Sat & Sun:</strong> Closed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="contact-form-view" class="contact-view-item">
+                    <div id="contact-form">
+                         <div class="input-view">
+                                <h3>Name <div> *</div></h3>
+                                <input type="text" id="contact-name" class="required"/>
+                        </div>
+
+                        <div id="contact-form-contact">
+
+                            <div class="input-view">
+                                <h3>Email <div> *</div></h3>
+                                <input type="email" id="contact-email" class="required"/>
+                            </div>
+                            
+
+                            <div class="input-view">
+                                <h3>Phone <div> *</div></h3>
+                                <input type="tel" id="contact-phone" class="required"/>
+                            </div>
+
+                        </div>
+
+                        <div class="input-view">
+                            <h3>Description</h3>
+                            <textarea type="text" id="contact-message" ></textarea>
+                        </div>
+                        
+
+                        <div id="contact-submit">
+                            <div></div>
+                            <div></div>
+                            <a class="h10">Send</a>
+                            Send
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+    <script>
+        const submit = document.getElementById("contact-submit")
+        const requiredFields = document.getElementsByClassName("required")
+
+        const name = document.getElementById("contact-name")
+        const email = document.getElementById("contact-email")
+        const phone = document.getElementById("contact-phone")
+
+        const contactFormView = document.getElementById("contact-form-view")
+        const contactInfoView = document.getElementById("contact-info")
+
+        const sentVideo = document.getElementById("contact-sent-video")
+
+        const contactView = document.getElementById("contact-view")
+        const sentView = document.getElementById("contact-sent-view")
+        const intro = document.getElementById("contact-page-intro")
+
+        submit.addEventListener("click", () => {
+            const name = document.getElementById("contact-name").value
+            const email = document.getElementById("contact-email").value
+            const phone = document.getElementById("contact-phone").value
+            const message = document.getElementById("contact-message").value
+
+            if(check()){
+                fetch(`/send/`, {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({"name":name, "email": email, "phone": phone, "message": message})
+                })
+
+                contactInfoView.style.transform = "translateX(-100vw)"
+                contactInfoView.style.opacity = 0
+
+                contactFormView.style.transform = "translateX(100vw)"
+                contactFormView.style.opacity = 0
+
+                sentView.style.opacity = 1
+
+                sentVideo.play()
+                intro.style.opacity = 0
+
+                setTimeout(() => {
+                    contactView.style.display = "none"
+                }, 1000);
+            }
+            
+
+        })
+        
+        const check = () => {
+
+            if(name.value.trim() == ""){
+                name.style.borderColor = "red"
+                return false
+            } else {
+                name.style.borderColor = "black"
+            }
+
+            if(email.value.trim() == "" || !email.value.includes("@") || !email.value.includes(".")) {
+                email.style.borderColor = "red"
+                return false
+            } else {
+                email.style.borderColor = "black"
+            }
+
+            if(phone.value.trim() == "" || phone.value.length < 10) {
+                phone.style.borderColor = "red"
+                return false
+            } else {
+                phone.style.borderColor = "black"
+            }
+            return true
+        }
+    </script>
+
